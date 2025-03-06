@@ -1,10 +1,10 @@
-FROM openjdk:21 AS BUILD_IMAGE
-RUN apt update
+FROM openjdk:11 AS BUILD_IMAGE
+RUN apt update && apt install maven -y
 RUN apt install maven
 RUN git clone https://github.com/Azharpasha1996/devops-project.git
 RUN cd devops-project && mvn install
 
-FROM tomcat:9-jre21
+FROM tomcat:9-jre11
 
 RUN rm -rf /usr/local/tomcat/webapps/*
 
