@@ -9,6 +9,9 @@ pipeline {
         AWS_DEFAULT_REGION = 'ap-south-1'   // AWS region
         S3_BUCKET = 'devops-project-001'    // S3 bucket in which artifact has to be uploaded
         ARTIFACT_PATH = '/var/lib/jenkins/workspace/pipeline-001/target/devops-v2-0.0.1-SNAPSHOT.war'   // path of the Artifact.
+        registryCredentials = 'ecr:ap-south-1:awscreds01'
+        imageName = "842675975596.dkr.ecr.ap-south-1.amazonaws.com/devopsimg"
+        vprofileRegistry = "https://842675975596.dkr.ecr.ap-south-1.amazonaws.com"
     }
 
     stages {
@@ -87,18 +90,20 @@ pipeline {
             }
         }
 
-    }
+        stage("Build App Image") {
+            steps {
 
-    post {
-        success {
-            echo 'Artifact successfully uploaded to S3.'
+                script {
+                    dockerImage = docker.build( imageName + ":$BUILD_NUMBER", ".")
+                }
+
+            }
         }
-        failure {
-            echo 'Upload to S3 failed.'
-        }
+
     }
 
         
-    
-    
+
+
+
 }
