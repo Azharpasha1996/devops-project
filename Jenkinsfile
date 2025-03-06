@@ -5,6 +5,12 @@ pipeline {
         jdk "JDK21"
     }
 
+    environment {
+        AWS_DEFAULT_REGION = 'ap-south-1'   // AWS region
+        S3_BUCKET = 'devops-project-001'    // S3 bucket in which artifact has to be uploaded
+        ARTIFACT_PATH = '/var/lib/jenkins/workspace/pipeline-001/target/devops-v2-0.0.1-SNAPSHOT.war'   // path of the Artifact.
+    }
+
     stages {
         stage('Fetch code') {
             steps{
@@ -63,7 +69,36 @@ pipeline {
                 }
             }
         }
-        
+
+        stage('Upload to S3') {
+            steps {
+                // Use 'withCredentials' to inject AWS credentials securely
+                withCredentials([
+                    string(credentialsId: 'aws-access-key-id', variable: 'AWS_ACCESS_KEY_ID'), 
+                    string(credentialsId: 'aws-secret-access-key', variable: 'AWS_SECRET_ACCESS_KEY')
+                ]) {
+                    script {
+                        // Upload the artifact to S3 bucket using the injected AWS credentials
+                        sh """
+                            aws s3 cp ${ARTIFACT_PATH} s3://${S3_BUCKET}/ --region ${AWS_DEFAULT_REGION}
+                        """
+                    }
+                }
+            }
+        }
+
     }
+
+    post {
+        success {
+            echo 'Artifact successfully uploaded to S3.'
+        }
+        failure {
+            echo 'Upload to S3 failed.'
+        }
+    }
+
+        
+    
     
 }
