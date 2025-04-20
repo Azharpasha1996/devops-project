@@ -1,4 +1,4 @@
-FROM openjdk:11 AS BUILD_IMAGE
+FROM openjdk:21 AS BUILD_IMAGE
 RUN apt update -y
 RUN apt install maven -y
 RUN git clone https://github.com/Azharpasha1996/devops-project.git
