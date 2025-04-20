@@ -1,6 +1,6 @@
 FROM openjdk:11 AS BUILD_IMAGE
-RUN apt update && apt install maven -y
-RUN apt install maven
+RUN apt update -y
+RUN apt install maven -y
 RUN git clone https://github.com/Azharpasha1996/devops-project.git
 RUN cd devops-project && mvn install
 
